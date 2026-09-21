@@ -1,2 +1,2 @@
 # DSA-using-cpp-linked-list-tree-and-graph
-This repository contains Data Structures and Algorithms programsimplemented in C++.The repository covers:- Linked Lists- Trees- Graphs.
+This repository contains Data Structures and Algorithms programs implemented in C++.The repository covers:- Linked Lists- Trees- Graphs.
