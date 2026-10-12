@@ -1,0 +1,377 @@
+#include <iostream>
+#include <string>
+#include <queue>
+#include <stack>
+using namespace std;
+
+struct Node {
+    string stop;
+    Node* next;
+    Node* prev;
+};
+
+Node* head = NULL;
+queue<string> stopQueue;
+stack<string> undoStack;
+
+// Add a stop to the circular doubly linked list
+void insertStop(string name) {
+    Node* newNode = new Node;
+    newNode->stop = name;
+
+    if (head == NULL) {
+        head = newNode;
+        newNode->next = newNode;
+        newNode->prev = newNode;
+    } else {
+        Node* tail = head->prev;
+
+        newNode->next = head;
+        newNode->prev = tail;
+        tail->next = newNode;
+        head->prev = newNode;
+    }
+
+    cout << name << " added to the bus route.\n";
+}
+
+// Delete a stop from the route
+void deleteStop() {
+    if (head == NULL) {
+        cout << "Bus route is empty!\n";
+        return;
+    }
+
+    string name;
+    cout << "Enter stop name to delete: ";
+    getline(cin >> ws, name);
+
+    Node* temp = head;
+
+    do {
+        if (temp->stop == name) {
+            if (temp->next == temp) {
+                head = NULL;
+            } else {
+                temp->prev->next = temp->next;
+                temp->next->prev = temp->prev;
+
+                if (temp == head) {
+                    head = temp->next;
+                }
+            }
+
+            delete temp;
+            cout << name << " deleted from the bus route.\n";
+            return;
+        }
+
+        temp = temp->next;
+    } while (temp != head);
+
+    cout << "Stop not found!\n";
+}
+
+// Add a stop and record it for undo
+void addStop() {
+    string name;
+
+    cout << "Enter bus stop name: ";
+    getline(cin >> ws, name);
+
+    insertStop(name);
+    undoStack.push(name);
+}
+
+// Search for a stop
+void searchStop() {
+    if (head == NULL) {
+        cout << "Bus route is empty!\n";
+        return;
+    }
+
+    string name;
+    cout << "Enter stop name to search: ";
+    getline(cin >> ws, name);
+
+    Node* temp = head;
+    int position = 1;
+
+    do {
+        if (temp->stop == name) {
+            cout << name << " found at position "
+                 << position << ".\n";
+            return;
+        }
+
+        temp = temp->next;
+        position++;
+    } while (temp != head);
+
+    cout << "Stop not found!\n";
+}
+
+// Display the route in forward direction
+void displayForward() {
+    if (head == NULL) {
+        cout << "Bus route is empty!\n";
+        return;
+    }
+
+    Node* temp = head;
+
+    cout << "Forward Route: ";
+
+    do {
+        cout << temp->stop << " -> ";
+        temp = temp->next;
+    } while (temp != head);
+
+    cout << "(back to start)\n";
+}
+
+// Display the route in backward direction
+void displayBackward() {
+    if (head == NULL) {
+        cout << "Bus route is empty!\n";
+        return;
+    }
+
+    Node* temp = head->prev;
+
+    cout << "Backward Route: ";
+
+    do {
+        cout << temp->stop << " -> ";
+        temp = temp->prev;
+    } while (temp != head->prev);
+
+    cout << "(back to end)\n";
+}
+
+// Show the next and previous stops
+void showNextPrevious() {
+    if (head == NULL) {
+        cout << "Bus route is empty!\n";
+        return;
+    }
+
+    string name;
+    cout << "Enter a bus stop name: ";
+    getline(cin >> ws, name);
+
+    Node* temp = head;
+
+    do {
+        if (temp->stop == name) {
+            cout << "Current Stop: " << temp->stop << endl;
+            cout << "Previous Stop: " << temp->prev->stop << endl;
+            cout << "Next Stop: " << temp->next->stop << endl;
+            return;
+        }
+
+        temp = temp->next;
+    } while (temp != head);
+
+    cout << "Stop not found!\n";
+}
+
+// Undo the last successful addition
+void undoLastAddition() {
+    if (undoStack.empty()) {
+        cout << "No addition available to undo!\n";
+        return;
+    }
+
+    string name = undoStack.top();
+    undoStack.pop();
+
+    if (head == NULL) {
+        cout << "Bus route is empty!\n";
+        return;
+    }
+
+    Node* temp = head;
+
+    do {
+        if (temp->stop == name) {
+            if (temp->next == temp) {
+                head = NULL;
+            } else {
+                temp->prev->next = temp->next;
+                temp->next->prev = temp->prev;
+
+                if (temp == head) {
+                    head = temp->next;
+                }
+            }
+
+            delete temp;
+            cout << "Last addition undone: " << name << endl;
+            return;
+        }
+
+        temp = temp->next;
+    } while (temp != head);
+
+    cout << "The stop is no longer in the route.\n";
+}
+
+// Add a stop to the queue
+void enqueueStop() {
+    string name;
+
+    cout << "Enter stop name to add to queue: ";
+    getline(cin >> ws, name);
+
+    stopQueue.push(name);
+    cout << name << " added to the pending queue.\n";
+}
+
+// Delete the first pending stop from the queue
+void dequeueStop() {
+    if (stopQueue.empty()) {
+        cout << "Queue is empty!\n";
+        return;
+    }
+
+    cout << stopQueue.front() << " removed from the queue.\n";
+    stopQueue.pop();
+}
+
+// Process the first pending stop and add it to the route
+void processQueue() {
+    if (stopQueue.empty()) {
+        cout << "No pending stops to process!\n";
+        return;
+    }
+
+    string name = stopQueue.front();
+    stopQueue.pop();
+
+    insertStop(name);
+    undoStack.push(name);
+
+    cout << name << " processed and added to the route.\n";
+}
+
+// Queue submenu
+void queueManagement() {
+    int choice;
+
+    do {
+        cout << "\n--- Queue Management ---\n";
+        cout << "1. Add Stop to Queue\n";
+        cout << "2. Delete Stop from Queue\n";
+        cout << "3. Process Queue (Add to Route)\n";
+        cout << "4. Back to Main Menu\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                enqueueStop();
+                break;
+
+            case 2:
+                dequeueStop();
+                break;
+
+            case 3:
+                processQueue();
+                break;
+
+            case 4:
+                break;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 4);
+}
+
+// Main function
+int main() {
+    int choice;
+
+    // Four stops already added when program starts
+    insertStop("Sangamner");
+    insertStop("Akole");
+    insertStop("Shirdi");
+    insertStop("Nashik");
+
+    do {
+        cout << "\n===== BUS ROUTE MANAGEMENT SYSTEM =====\n";
+        cout << "1. Add Bus Stop\n";
+        cout << "2. Delete Bus Stop\n";
+        cout << "3. Search Bus Stop\n";
+        cout << "4. Display Forward Route\n";
+        cout << "5. Display Backward Route\n";
+        cout << "6. Show Next and Previous Stop\n";
+        cout << "7. Undo Last Addition (Stack)\n";
+        cout << "8. Queue Management\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addStop();
+                break;
+
+            case 2:
+                deleteStop();
+                break;
+
+            case 3:
+                searchStop();
+                break;
+
+            case 4:
+                displayForward();
+                break;
+
+            case 5:
+                displayBackward();
+                break;
+
+            case 6:
+                showNextPrevious();
+                break;
+
+            case 7:
+                undoLastAddition();
+                break;
+
+            case 8:
+                queueManagement();
+                break;
+
+            case 9:
+                cout << "Exiting Bus Route Management System.\n";
+                break;
+
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+
+    } while (choice != 9);
+
+    // Free all remaining route nodes
+    while (head != NULL) {
+        Node* temp = head;
+
+        if (head->next == head) {
+            head = NULL;
+        } else {
+            head->prev->next = head->next;
+            head->next->prev = head->prev;
+            head = head->next;
+        }
+
+        delete temp;
+    }
+
+    return 0;
+}
