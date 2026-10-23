@@ -1,0 +1,13 @@
+Algorithm:
+ Start the program.
+ Input equipment names and wiring connections with their weights.
+ Sort the edges in ascending order of weight.
+ Apply Kruskal's algorithm using Disjoint Set Union.
+ Select edges that do not create cycles.
+ Display each selected edge, its weight, and the running total cost.
+ Check whether V - 1 edges were selected.
+ If fewer than V - 1 edges were selected, report that the graph is disconnected.
+ Ask the user whether an edge weight should be updated.
+ If yes, update the specified connection's weight.
+ Apply Kruskal's algorithm again and display the new result.
+ Stop.
