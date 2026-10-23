@@ -1,0 +1,12 @@
+1. Problem Statement
+   Develop a C++ program to represent hospital equipment units as vertices and possible wiring connections as weighted edges.
+   Apply Kruskal's algorithm to find the minimum-cost wiring connections.
+   Modify the program to update an edge weight and recalculate the minimum spanning tree, display each selected edge with its
+   weight and running total cost, and detect whether the graph is disconnected and a spanning tree can be formed.
+
+2. Solution
+   The program represents hospital equipment as vertices and wiring connections as weighted edges. Kruskal's algorithm sorts the edges by weight and selects the 
+   lowest-cost connections without creating cycles.
+   The DSU data structure identifies cycles, while the running total records the cost after each selected edge. The program also allows the user to update an  
+   existing edge weight and recalculate the minimum spanning tree. If the number of selected edges is less than V - 1, the graph is disconnected and a spanning 
+   tree cannot be formed.
