@@ -1,0 +1,13 @@
+1.Problem Statement 
+  Develop a C++ program to represent hospital equipment units as vertices and possible wiring links as weighted edges.
+  Apply Kruskal's algorithm to select the minimum-cost wiring connections. Display selected edges and total wiring cost, 
+  and list edges rejected because they create cycles.
+
+2.Soiution
+  The hospital equipment wiring problem is solved using Kruskal’s Algorithm. Each hospital equipment unit is represented as a vertex,
+  and each possible wiring connection is represented as a weighted edge.
+  First, all edges are sorted in ascending order of their costs. The algorithm selects the lowest-cost edge that does not create a cycle.
+  The Disjoint Set Union (DSU) data structure is used to detect cycles. The process continues until all equipment units are connected or
+  all edges have been checked.
+  Finally, the program displays the selected wiring connections, the minimum total wiring cost, and the rejected edges that create cycles.
+  This approach helps connect hospital equipment with minimum cost while avoiding unnecessary wiring connections.
